@@ -9,13 +9,23 @@ namespace JNNJMods.OrbtXLCheat
     {
         public bool draw = true;
         public string prevScoreField = "100";
+        private Rect windowRect = new Rect(100, 100, 400, 500);
 
         public void OnGUI()
         {
             if (!draw)
                 return;
 
-            GUI.Window(0, new Rect(100, 100, 400, 500), DrawWindow, "OrbtXL Cheat by JNNJ");
+            windowRect = GUI.Window(0, windowRect, DrawWindow, "OrbtXL Cheat by JNNJ");
+
+            windowRect.x = Mathf.Clamp(windowRect.x, 0, Screen.currentResolution.width - windowRect.width);
+            windowRect.y = Mathf.Clamp(windowRect.y, 0, Screen.currentResolution.height - windowRect.height);
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.RightShift))
+                draw = !draw;
         }
 
         public void DrawWindow(int id)
@@ -25,7 +35,7 @@ namespace JNNJMods.OrbtXLCheat
             if (GUILayout.Button("Get all Achievements"))
                 UnlockAllAchievements();
 
-            if (GUILayout.Button("Reset everything"))
+            if (GUILayout.Button("Reset Achievements"))
                 SteamUserStats.ResetAllStats(true);
 
             GUILayout.Label("Game Cheats");
@@ -62,6 +72,7 @@ namespace JNNJMods.OrbtXLCheat
                 leaderboards.UploadScore(Leaderboard.orbt_xl_High_Scores, 0);
             }
 
+            GUI.DragWindow(new Rect(0, 0, 10000, 20));
         }
 
         public bool IsNumeric(string value)
